@@ -4,9 +4,9 @@ This project is a simulation of the Magi System from the Neon Genesis Evangelion
 
 ## Code Overview
 
-The script begins by importing necessary modules and setting up the language model to be used for the simulation. The language model is set to "gpt-3.5-turbo" with a temperature of 0.5.
+The script begins by importing necessary modules and setting up the language model to be used for the simulation. The language model usually is set to "gpt-3.5-turbo" with a temperature of 0.5, but also local LLM using Ollama can be used (like llama3), but in this case the research of Melchior has issue to search on internet
 
-The user is then prompted to input a question. This question is used as the basis for the tasks that the agents will perform.
+The user is then prompted to input a question. This question is used as the basis for the tasks that the 3 AIs will perform.
 
 Next, the `Agent` objects are defined. Each agent represents one of the supercomputers in the Magi System and is assigned a specific role and goal. For example, Melchior's role is 'Scientist' and its goal is 'Conduct technical analysis and provide logical conclusions.' Each agent also has a backstory based on the Evangelion lore.
 
