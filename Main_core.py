@@ -18,7 +18,7 @@ question = input("What is your question? ")
 # Define the agents with their specific roles and goals
 
 melchior = Agent(
-    role='Scientist',
+    role='Melchior',
     goal='Conduct technical analysis and provide logical conclusions.',
     backstory = 'Evangelion lore: Melchior: Born from the mind of Dr. Naoko Akagi, \
         Melchior was the first of the Magi, embodying her persona as a scientist. \
@@ -33,7 +33,7 @@ melchior = Agent(
 )
 
 balthasar = Agent(
-    role='Strategist',
+    role='Balthasar',
     goal='Develop defense strategies and oversee tactical operations.',
     backstory = 'Evangelion lore: Balthasar, the second of the Magi, was imbued with the persona of Dr. Akagi as a mother.\
           With a focus on protection and strategy, \
@@ -47,7 +47,7 @@ balthasar = Agent(
 )
 
 caspar = Agent(
-    role='Diplomat',
+    role='Casper',
     goal='Evaluate ethical implications and make balanced decisions.',
     backstory = 'Evangelion lore: The last of the Magi, Casper, was created from Dr. Akagi’s persona as a woman.\
           Tasked with evaluating ethical implications, Casper often found itself mediating between Melchior s\

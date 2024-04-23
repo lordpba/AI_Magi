@@ -16,4 +16,16 @@ In the Neon Genesis Evangelion series, the Magi System is a trio of supercompute
 
 ## Dependencies
 
-This project uses several Python packages, including `crewai`, `langchain_openai`, `langchain_community.llms`, and `crewai_tools`. Make sure to install these packages before running the script. You can install them with pip:
+This project uses several Python packages, use requirements.txt
+
+## Help
+This project is fan made and on going, searching for help!
+
+## Example of a Magi response to a question
+
+Question: is good to use Ikari as pilot of the Eva01?
+Answer: After conducting a thorough analysis of Shinji Ikari's mental and emotional well-being, readiness for responsibilities, and potential traumas associated with piloting Eva01, it is clear that caution must be exercised when considering him as the pilot. While Shinji possesses unique abilities and potential for growth, his struggles with psychological trauma, emotional intimacy issues, and the weight of responsibility pose significant challenges.
+
+To formulate a comprehensive defense strategy, it is imperative to prioritize Shinji's well-being and readiness for the role. Adequate support and resources must be provided to address his emotional struggles and ensure his effectiveness as the pilot of Eva01. Additionally, ethical considerations regarding the impact on his mental health should not be overlooked.
+
+While Shinji's abilities and potential are valuable assets, the decision to use him as the pilot of Eva01 must be made with a balance of strategic advantages and ethical considerations. Proceeding with caution, providing necessary support, and monitoring his well-being will be crucial in ensuring the success of the mission and the safety of all involved.
