@@ -13,6 +13,7 @@ Next, the `Agent` objects are defined. Each agent represents one of the supercom
 ## Evangelion Lore
 
 In the Neon Genesis Evangelion series, the Magi System is a trio of supercomputers developed by Dr. Naoko Akagi of NERV. Each supercomputer represents a different aspect of Dr. Akagi's personality: Caspar represents her as a woman, Melchior represents her as a scientist, and Balthasar represents her as a mother. The Magi System is used to make all major decisions within NERV, and its consensus-based decision-making process is a key element of the series.
+Update: added an human intervention into the Diplomacy analysis, the system asks for a feedback, so we have more control on the decision process as some geo-politic is involved.
 
 ## Dependencies
 
