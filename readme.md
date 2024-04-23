@@ -22,9 +22,10 @@ This project uses several Python packages, use requirements.txt
 ## Help
 This project is fan made and on going, searching for help!
 
-## Example of a Magi response to a question
+## Example of a Magi response obtained:
 
 Question: is good to use Ikari as pilot of the Eva01?
+
 Answer: After conducting a thorough analysis of Shinji Ikari's mental and emotional well-being, readiness for responsibilities, and potential traumas associated with piloting Eva01, it is clear that caution must be exercised when considering him as the pilot. While Shinji possesses unique abilities and potential for growth, his struggles with psychological trauma, emotional intimacy issues, and the weight of responsibility pose significant challenges.
 
 To formulate a comprehensive defense strategy, it is imperative to prioritize Shinji's well-being and readiness for the role. Adequate support and resources must be provided to address his emotional struggles and ensure his effectiveness as the pilot of Eva01. Additionally, ethical considerations regarding the impact on his mental health should not be overlooked.
