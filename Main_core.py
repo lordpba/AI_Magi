@@ -9,12 +9,12 @@ load_dotenv()
 
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
-model = ollama
+model = gpt35_turbo
 
 search_tool = SerperDevTool()
 
-#question = input("What is your question? ")
-question  = "What is the best way to fight against the Angels?"
+question = input("What is your question? ")
+#question  = "What is the best way to fight against the Angels?"
 
 # Define the agents with their specific roles and goals
 
