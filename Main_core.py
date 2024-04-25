@@ -12,12 +12,12 @@ groq = ChatGroq(model_name='llama3-8b-8192')
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
 
-model = groq #select the model to use
+model = gpt35_turbo #select the model to use
 
 search_tool = SerperDevTool()
 
-question = input("What is your question? ")
-#question  = "What is the best way to fight against the Angels?"
+#question = input("What is your question? ")
+question  = "Is Shinji Ikari able to pilot the Eva-01??"
 
 # Define the agents with their specific roles and goals
 
@@ -30,10 +30,10 @@ melchior = Agent(
                 Melchior was instrumental in the early successes of NERV. \
                     However, the weight of responsibility often led to conflicts with the other two Magi. \
                         Despite this, Melchior remained steadfast, committed to the mission of defending humanity',
-    #memory = True,
+    memory = True,
     verbose=True,
     allow_delegation=True,
-    #tools=[search_tool],
+    tools=[search_tool],
     llm = model
 )
 
@@ -45,10 +45,10 @@ balthasar = Agent(
             Balthasar played a crucial role in formulating defense plans against the Angels. \
                 Although its maternal instincts sometimes clashed with the cold logic of Melchior, \
                     Balthasar never wavered from its purpose. Its strategic insights were key to many victories',
-    #memory=True,
+    memory=True,
     verbose=True,
     allow_delegation=True,
-    #tools=[search_tool],
+    tools=[search_tool],
     llm = model
 )
 
@@ -59,8 +59,9 @@ casper = Agent(
           Tasked with evaluating ethical implications, Caspar often found itself mediating between Melchior s\
               logic and Balthasar’s protective instincts. Despite the challenges, Caspar’s unique perspective brought balance to the Magi system, ensuring decisions were not only strategic but also ethically sound.',
     verbose=True,
+    memory = True,
     allow_delegation=True,
-    #tools=[search_tool],
+    tools=[search_tool],
     llm = model
 )
 
@@ -81,8 +82,9 @@ strategy_task = Task(
 
 diplomacy_task = Task(
     description=f'Assess the ethical implications of a proposed action about "{question}".',
-    expected_output='A reasoned judgment on the ethical acceptability of the action.',
-    #human_input=True,
+    expected_output='A summary of all the analysis done before with \
+         a reasoned judgment on the ethical acceptability of the action.',
+    human_input=True,
     agent = casper
 )
 
