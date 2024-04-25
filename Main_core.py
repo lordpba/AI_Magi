@@ -3,13 +3,20 @@ from langchain_openai import ChatOpenAI
 from langchain_community.tools import DuckDuckGoSearchRun, DuckDuckGoSearchResults
 from langchain_community.llms import OpenAI, Ollama
 from crewai_tools import SerperDevTool, ScrapeElementFromWebsiteTool, ScrapeWebsiteTool
+from langchain_groq import ChatGroq
 
 from dotenv import load_dotenv
 load_dotenv()
 
+groq = ChatGroq(
+            temperature=0, 
+            groq_api_key = st.secrets[""], 
+            model_name='llama'
+        )
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
-model = gpt35_turbo
+
+model = gpt35_turbo #select the model to use
 
 search_tool = SerperDevTool()
 
@@ -42,7 +49,7 @@ balthasar = Agent(
             Balthasar played a crucial role in formulating defense plans against the Angels. \
                 Although its maternal instincts sometimes clashed with the cold logic of Melchior, \
                     Balthasar never wavered from its purpose. Its strategic insights were key to many victories',
-    memory=True,
+    #memory=True,
     verbose=True,
     allow_delegation=True,
     #tools=[search_tool],
@@ -79,7 +86,7 @@ strategy_task = Task(
 diplomacy_task = Task(
     description=f'Assess the ethical implications of a proposed action about "{question}".',
     expected_output='A reasoned judgment on the ethical acceptability of the action.',
-    human_input=True,
+    #human_input=True,
     agent = caspar
 )
 
@@ -87,7 +94,7 @@ diplomacy_task = Task(
 magi_system = Crew(
     agents=[melchior, balthasar, caspar],
     tasks=[scientific_analysis_task, strategy_task, diplomacy_task],
-    memory=True,
+    #memory=True,
     cache=True,
     verbose=1,
 )
