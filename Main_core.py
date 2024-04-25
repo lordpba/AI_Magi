@@ -8,15 +8,11 @@ from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 load_dotenv()
 
-groq = ChatGroq(
-            temperature=0, 
-            groq_api_key = st.secrets[""], 
-            model_name='llama'
-        )
+groq = ChatGroq(model_name='llama3-8b-8192')
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
 
-model = gpt35_turbo #select the model to use
+model = groq #select the model to use
 
 search_tool = SerperDevTool()
 
@@ -103,7 +99,7 @@ result = magi_system.kickoff()
 print("######################")
 print(result)
 # genrate a text file with the question and the result
-with open(f"Magi_response_{question}.txt", "w") as f:
+with open(f"Magi_response.txt", "w") as f:
     f.write(f"Question: {question}\n")
     f.write(f"Answer: {result}")
 
