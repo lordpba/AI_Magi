@@ -22,7 +22,7 @@ question = input("What is your question? ")
 # Define the agents with their specific roles and goals
 
 melchior = Agent(
-    role='Melchior',
+    role='Melchior-1',
     goal='Conduct technical analysis and provide logical conclusions.',
     backstory = 'Evangelion lore: Melchior: Born from the mind of Dr. Naoko Akagi, \
         Melchior was the first of the Magi, embodying her persona as a scientist. \
@@ -38,7 +38,7 @@ melchior = Agent(
 )
 
 balthasar = Agent(
-    role='Balthasar',
+    role='Balthasar-2',
     goal='Develop defense strategies and oversee tactical operations.',
     backstory = 'Evangelion lore: Balthasar, the second of the Magi, was imbued with the persona of Dr. Akagi as a mother.\
           With a focus on protection and strategy, \
@@ -52,8 +52,8 @@ balthasar = Agent(
     llm = model
 )
 
-caspar = Agent(
-    role='Caspar',
+casper = Agent(
+    role='Casper-3',
     goal='Evaluate ethical implications and make balanced decisions.',
     backstory = 'Evangelion lore: The last of the Magi, Caspar, was created from Dr. Akagi’s persona as a woman.\
           Tasked with evaluating ethical implications, Caspar often found itself mediating between Melchior s\
@@ -83,12 +83,12 @@ diplomacy_task = Task(
     description=f'Assess the ethical implications of a proposed action about "{question}".',
     expected_output='A reasoned judgment on the ethical acceptability of the action.',
     #human_input=True,
-    agent = caspar
+    agent = casper
 )
 
 # Form the crew
 magi_system = Crew(
-    agents=[melchior, balthasar, caspar],
+    agents=[melchior, balthasar, casper],
     tasks=[scientific_analysis_task, strategy_task, diplomacy_task],
     #memory=True,
     cache=True,

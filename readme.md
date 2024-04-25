@@ -1,6 +1,6 @@
 # Evangelion Magi System Simulation
 
-This project is a simulation of the Magi System from the Neon Genesis Evangelion series. It uses the `crewai` package to create agents that represent the three supercomputers of the Magi System: Melchior, Balthasar, and Caspar.
+This project is a simulation of the Magi System from the Neon Genesis Evangelion series. It uses the `crewai` package to create agents that represent the three supercomputers of the Magi System: Melchior, Balthasar, and Casper.
 
 ## Code Overview
 
