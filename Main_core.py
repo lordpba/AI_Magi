@@ -8,7 +8,7 @@ from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 load_dotenv()
 
-groq = ChatGroq(model_name='llama3-8b-8192')
+groq = ChatGroq(model_name='llama3-8b-8192') 
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
 
@@ -34,7 +34,8 @@ melchior = Agent(
     verbose=True,
     allow_delegation=True,
     tools=[search_tool],
-    llm = model
+    llm = model,
+    output = 'text' #check if it works
 )
 
 balthasar = Agent(
