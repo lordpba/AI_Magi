@@ -1,6 +1,7 @@
 # Evangelion Magi System Simulation
-
+![Magi](https://github.com/lordpba/AI_Magi/assets/40633120/5fb8c5db-4295-4944-9034-73dd0785cd50)
 This project is a simulation of the Magi System from the Neon Genesis Evangelion series. It uses the `crewai` package to create agents that represent the three supercomputers of the Magi System: Melchior, Balthasar, and Casper.
+
 
 ## Code Overview
 
