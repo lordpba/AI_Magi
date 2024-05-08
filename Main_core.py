@@ -12,12 +12,12 @@ groq = ChatGroq(model_name='llama3-8b-8192')
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
 
-model = groq #select the model to use
+model = gpt35_turbo #select the model to use
 
 search_tool = SerperDevTool()
 
-#question = input("What is your question? ")
-question  = "Is Shinji Ikari able to pilot the Eva-01??"
+question = input("What is your question? ")
+#question  = "Is Shinji Ikari able to pilot the Eva-01??"
 
 # Define the agents with their specific roles and goals
 
@@ -31,7 +31,7 @@ melchior = Agent(
                     However, the weight of responsibility often led to conflicts with the other two Magi. \
                         Despite this, Melchior remained steadfast, committed to the mission of defending humanity',
     memory = True,
-    verbose=True,
+    verbose= False,
     allow_delegation=True,
     tools=[search_tool],
     llm = model,
