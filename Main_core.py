@@ -12,7 +12,7 @@ groq = ChatGroq(model_name='llama3-8b-8192')
 gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
 ollama = Ollama(model="phi3")
 
-model = gpt35_turbo #select the model to use
+model = groq #select the model to use
 
 search_tool = SerperDevTool()
 
