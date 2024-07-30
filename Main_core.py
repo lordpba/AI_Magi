@@ -9,11 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define the tools that the agents can use
-groq = ChatGroq(model_name='llama3-8b-8192') 
-gpt35_turbo = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
+groq = ChatGroq(model_name='llama-3.1-8b-instant') 
+gpt = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
 ollama = Ollama(model="phi3")
 
-model = groq #select the model to use
+model = gpt #select the model to use
 
 search_tool = SerperDevTool()
 
