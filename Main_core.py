@@ -9,11 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define the tools that the agents can use
-groq = ChatGroq(model_name='llama-3.1-8b-instant') 
+groq = ChatGroq(model_name='gemma2-9b-it') #gemma2-9b-it llama-3.1-8b-instant
 gpt = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.5)
 ollama = Ollama(model="phi3")
 
-model = gpt #select the model to use
+model = groq #select the model to use
 
 search_tool = SerperDevTool()
 
@@ -33,8 +33,7 @@ melchior = Agent(
                         Despite this, Melchior remained steadfast, committed to the mission of defending humanity',
     verbose= False,
     allow_delegation=True,
-    llm = model,
-    output = 'melchior.txt' #check if it works
+    llm = model
 )
 
 balthasar = Agent(
@@ -82,7 +81,7 @@ diplomacy_task = Task(
     description=f'Assess the ethical implications of a proposed action about "{question}".',
     expected_output='A summary of all the analysis done before with \
          a reasoned judgment on the ethical acceptability of the action.',
-    human_input=True,
+    human_input=False,
     tools = [search_tool],
     agent = casper
 )
@@ -93,7 +92,11 @@ magi_system = Crew(
     tasks=[scientific_analysis_task, strategy_task, diplomacy_task],
     memory=True,
     cache=True,
+    max_rpm=4,
+    language='Italian',
+    output_log_file = 'magi_system_log.txt',
     verbose=1,
+    token_usage=True
 )
 
 result = magi_system.kickoff()
