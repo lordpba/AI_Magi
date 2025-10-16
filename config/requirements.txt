@@ -1,0 +1,14 @@
+# MAGI System Requirements v2.0 - Modern CrewAI
+# Updated December 2024 - No LangChain Required
+
+# Core CrewAI Framework with tools (includes crewai-tools automatically)
+crewai[tools]>=0.100.0
+
+# Web Interface
+gradio>=4.40.0
+
+# Environment Configuration  
+python-dotenv>=1.0.0
+
+# Note: CrewAI now uses LiteLLM internally for provider support
+# No need for langchain, langchain-groq, or langchain-openai

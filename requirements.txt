@@ -1,5 +1,0 @@
-crewai
-langchain
-langchain_community
-crewai_tools==0.2.2
-langchain_groq
