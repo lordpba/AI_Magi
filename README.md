@@ -5,7 +5,7 @@
 ![MAGI GUI Example](example_gui.png)
 
 <div align="center">
-<img src="example_gui.png" alt="MAGI System GUI" width="600"/>
+<img src="Magi.jpg" alt="MAGI System GUI" width="600"/>
 </div>
 
 ---
