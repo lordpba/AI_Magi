@@ -319,7 +319,7 @@ def main():
     interface.launch(
         server_name="0.0.0.0",  # Allow external access
         server_port=7862,  # Different port to avoid conflict
-        share=False,  # Set to True to create public link
+        share=True,  # Create public link
         inbrowser=True,  # Open in browser automatically
         show_error=True
     )
