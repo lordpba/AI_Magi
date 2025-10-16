@@ -67,3 +67,6 @@ Thumbs.db
 # Keep directory structure
 !.gitkeep
 .gradio/certificate.pem
+
+# Hugging Face deployment folder (not needed in public repo)
+HF/
