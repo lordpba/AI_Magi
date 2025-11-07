@@ -41,6 +41,31 @@ Open [http://localhost:7862](http://localhost:7862) in your browser.
 
 ---
 
+## ☁️ Deploy to Hugging Face Spaces
+
+You can deploy this app publicly in a few seconds with Gradio:
+
+```bash
+# From the project root
+pip install gradio
+gradio deploy
+```
+
+Notes:
+- The deployment uses `app.py` (exports `app = create_magi_interface()`).
+- Dependencies are taken from the root `requirements.txt`.
+- Add your API keys (e.g., `GROQ_API_KEY`) as Secrets in the Space settings:
+	- Go to Space → Settings → Variables and secrets → New secret.
+	- Name: `GROQ_API_KEY`, Value: your key.
+	- Optionally add `OPENAI_API_KEY`, `SERPER_API_KEY`.
+- If you plan to use only local Ollama, you don’t need any secret, but Spaces do not provide GPU/CPU for Ollama models, so prefer Groq/OpenAI.
+
+Troubleshooting:
+- If you see “Module not found” after deploy, ensure `requirements.txt` exists in the project root and includes `gradio`, `crewai[tools]`, `python-dotenv`, and `litellm`.
+- Spaces automatically runs the Gradio app; no need to call `launch()` inside `app.py`.
+
+---
+
 ## 🛠️ Requirements
 
 - Python 3.8+

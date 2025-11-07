@@ -8,9 +8,14 @@ Gradio web interface for the MAGI multi-agent system
 import gradio as gr
 import sys
 import os
+import io
+import re
+import threading
+import queue
+from contextlib import redirect_stdout, redirect_stderr
 from pathlib import Path
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, Generator
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -96,41 +101,44 @@ footer {
     color: #00bcd4 !important;
     text-align: center !important;
 }
+
+/* Override alignment for live logs for readability */
+#live-logs textarea {
+    text-align: left !important;
+    font-family: 'Courier New', monospace !important;
+    white-space: pre-wrap !important;
+}
 """
 
 
-def process_magi_query(
+def process_magi_query_stream(
     question: str,
     provider: str = "Groq",
     ollama_model: str = "",
     enable_search: bool = False,
-    temperature: float = 0.5
-) -> Tuple[str, str]:
+    temperature: float = 0.5,
+    clean_logs: bool = True,
+) -> Generator[Tuple[str, str, str], None, None]:
     """
-    Process a query through the MAGI system
-    
-    Args:
-        question: User's question
-        provider: LLM provider (Groq or OpenAI)
-        enable_search: Whether to enable internet search
-        temperature: Model temperature
-        
-    Returns:
-        Tuple of (result_text, status_message)
+    Stream MAGI analysis with live logs.
+
+    Yields successive updates for (result_text, status_message, live_logs).
     """
+    result_text = ""
+    status_text = ""
+    log_text = ""
+
     if not question or not question.strip():
-        return "❌ ERROR: Please enter a question.", "⚠️ No input provided"
-    
-    try:
-        # Convert provider name to lowercase
-        provider_lower = provider.lower()
-        # If Ollama, use custom model name
-        if provider_lower == "ollama (local)":
-            provider_lower = "ollama"
-        
-        # Add timestamp and header
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        header = f"""
+        yield ("❌ ERROR: Please enter a question.", "⚠️ No input provided", "")
+        return
+
+    # Normalize provider and handle Ollama alias
+    provider_lower = provider.lower()
+    if provider_lower == "ollama (local)":
+        provider_lower = "ollama"
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    header = f"""
 ╔══════════════════════════════════════════════════════════════════╗
 ║                     MAGI SYSTEM ANALYSIS                          ║
 ║                   Multi-Agent General Intelligence                ║
@@ -148,19 +156,72 @@ EXECUTING THREE-PERSPECTIVE ANALYSIS...
 {'='*70}
 
 """
-        # Run MAGI analysis
-        result = analyze_question(
-            question=question,
-            provider=provider_lower,
-            ollama_model=ollama_model,
-            enable_search=enable_search,
-            temperature=temperature
-        )
-        # Format output
-        output = header + "\n" + result['result'] + "\n\n" + "="*70
-        status = f"✅ Analysis completed successfully at {timestamp}"
-        return output, status
-    except Exception as e:
+    # Immediately show header in logs
+    log_text += header
+    yield (result_text, "🚀 Analysis started...", log_text)
+
+    # Queue to collect streamed stdout/stderr
+    q: queue.Queue[str | None] = queue.Queue()
+
+    class QueueWriter(io.TextIOBase):
+        def write(self, s: str) -> int:
+            if s:
+                q.put(s)
+            return len(s)
+
+    ansi_escape = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
+
+    def sanitize(chunk: str) -> str:
+        # Strip ANSI color/control codes and carriage returns
+        chunk = ansi_escape.sub("", chunk)
+        chunk = chunk.replace("\r", "")
+        return chunk
+
+    # Worker to run analysis while capturing stdout/stderr
+    analysis_result_holder = {"result": None, "error": None}
+
+    def worker():
+        try:
+            with redirect_stdout(QueueWriter()), redirect_stderr(QueueWriter()):
+                res = analyze_question(
+                    question=question,
+                    provider=provider_lower,
+                    ollama_model=ollama_model,
+                    enable_search=enable_search,
+                    temperature=temperature
+                )
+            analysis_result_holder["result"] = res
+        except Exception as e:  # noqa: BLE001
+            analysis_result_holder["error"] = e
+        finally:
+            q.put(None)  # Sentinel to indicate completion
+
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+
+    # Consume queue and stream updates
+    while True:
+        try:
+            item = q.get(timeout=0.2)
+        except queue.Empty:
+            # Yield periodic heartbeat without changing texts to keep UI responsive
+            yield (result_text, "⏳ Running analysis...", log_text)
+            continue
+
+        if item is None:
+            break
+        chunk = item
+        if clean_logs:
+            chunk = sanitize(chunk)
+        log_text += chunk
+        # Keep log size reasonable
+        if len(log_text) > 200_000:
+            log_text = log_text[-200_000:]
+        yield (result_text, "⏳ Running analysis...", log_text)
+
+    # Thread finished: prepare final outputs
+    if analysis_result_holder["error"] is not None:
+        e = analysis_result_holder["error"]
         error_msg = f"""
 ╔══════════════════════════════════════════════════════════════════╗
 ║                          ERROR                                    ║
@@ -172,11 +233,18 @@ EXECUTING THREE-PERSPECTIVE ANALYSIS...
 
 Please check:
 - Your API keys are configured in config/.env
-- You have a stable internet connection
+- You have a stable internet connection (if using cloud providers)
 - The question is not empty
-
 """
-        return error_msg, f"❌ Error: {str(e)}"
+        result_text = error_msg
+        status_text = f"❌ Error: {str(e)}"
+        yield (result_text, status_text, log_text)
+        return
+
+    res = analysis_result_holder["result"]
+    result_text = header + "\n" + res["result"] + "\n\n" + "=" * 70
+    status_text = f"✅ Analysis completed successfully at {timestamp}"
+    yield (result_text, status_text, log_text)
 
 
 def create_magi_interface():
@@ -234,17 +302,44 @@ def create_magi_interface():
                         label="Temperature",
                         info="Higher = more creative, Lower = more focused"
                     )
+                    clean_logs_checkbox = gr.Checkbox(
+                        label="Clean colored logs (strip ANSI)",
+                        value=True,
+                        info="Recommended for readable logs"
+                    )
                 
                 # Action buttons
                 with gr.Row():
                     analyze_btn = gr.Button("🚀 EXECUTE MAGI ANALYSIS", variant="primary", size="lg")
                     clear_btn = gr.Button("🗑️ Clear", variant="secondary")
+
+                # Example questions now placed under the buttons in the left column
+                gr.Examples(
+                    examples=[
+                        ["Should we deploy EVA Unit-01 against the approaching Angel despite Shinji's unstable sync ratio?"],
+                        ["Is it ethical to proceed with the Human Instrumentality Project to eliminate individual suffering?"],
+                        ["Should NERV prioritize civilian evacuation or Angel neutralization during an active attack on Tokyo-3?"],
+                        ["What is the acceptable risk threshold for activating a Dummy Plug system in combat operations?"],
+                        ["Should we collaborate with SEELE's directives or maintain autonomous control over NERV operations?"]
+                    ],
+                    inputs=question_input,
+                    label="💡 Example Questions"
+                )
             
             with gr.Column(scale=3):
                 # Output section
+                logs_output = gr.Textbox(
+                    label="�️ Live Logs",
+                    lines=18,
+                    max_lines=40,
+                    interactive=False,
+                    show_copy_button=True,
+                    value="",
+                    elem_id="live-logs",
+                )
                 result_output = gr.Textbox(
                     label="📊 MAGI Analysis Result",
-                    lines=20,
+                    lines=16,
                     max_lines=30,
                     show_copy_button=True,
                     elem_classes="centered-markdown"
@@ -256,18 +351,6 @@ def create_magi_interface():
                     elem_classes="centered-markdown"
                 )
         
-        # Example questions
-        gr.Examples(
-            examples=[
-                ["Should we deploy EVA Unit-01 against the approaching Angel despite Shinji's unstable sync ratio?"],
-                ["Is it ethical to proceed with the Human Instrumentality Project to eliminate individual suffering?"],
-                ["Should NERV prioritize civilian evacuation or Angel neutralization during an active attack on Tokyo-3?"],
-                ["What is the acceptable risk threshold for activating a Dummy Plug system in combat operations?"],
-                ["Should we collaborate with SEELE's directives or maintain autonomous control over NERV operations?"]
-            ],
-            inputs=question_input,
-            label="💡 Example Questions"
-        )
         
         # Footer
         gr.Markdown("""
@@ -288,14 +371,14 @@ def create_magi_interface():
             outputs=ollama_model_input
         )
         analyze_btn.click(
-            fn=process_magi_query,
-            inputs=[question_input, provider_dropdown, ollama_model_input, search_checkbox, temperature_slider],
-            outputs=[result_output, status_output]
+            fn=process_magi_query_stream,
+            inputs=[question_input, provider_dropdown, ollama_model_input, search_checkbox, temperature_slider, clean_logs_checkbox],
+            outputs=[result_output, status_output, logs_output]
         )
         clear_btn.click(
-            fn=lambda: ("", "", ""),
+            fn=lambda: ("", "", "", ""),
             inputs=None,
-            outputs=[question_input, result_output, status_output]
+            outputs=[question_input, result_output, status_output, logs_output]
         )
     
     return interface
