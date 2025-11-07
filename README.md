@@ -26,11 +26,14 @@ MAGI is the digital soul of NERV: scientific, ethical, and pragmatic. Now you ca
 # 1. Install dependencies
 pip install -r config/requirements.txt
 
-# 2. Configure API keys
+# 2. Install LiteLLM (required for LLM provider support)
+pip install litellm
+
+# 3. Configure API keys
 cp config/.env.example config/.env
 # Edit config/.env with your keys
 
-# 3. Launch web interface
+# 4. Launch web interface
 python src/magi_web_interface.py
 ```
 
